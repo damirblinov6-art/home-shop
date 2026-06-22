@@ -3,132 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Домашний Уют - Магазин товаров для дома</title>
+    <title>Домашний Уют — Магазин товаров для дома</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Подключаем SweetAlert для красивых уведомлений (Занятие 8) -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Подключаем Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
-            --primary-light: #818cf8;
             --secondary: #ec4899;
-            --accent: #06b6d4;
             --success: #10b981;
-            --warning: #f59e0b;
             --danger: #ef4444;
             --bg: #f8fafc;
             --white: #ffffff;
             --text: #1e293b;
             --text-light: #64748b;
             --border: #e2e8f0;
-            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
-            --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
-            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
-            --shadow-xl: 0 25px 50px -12px rgba(0,0,0,0.25);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1);
             --radius: 16px;
-            --radius-sm: 10px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.3s ease;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Montserrat', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             color: var(--text);
-            line-height: 1.6;
         }
-
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.1;
-        }
-
-        .bg-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: white;
-            animation: float 20s infinite;
-        }
-
-        .bg-circle:nth-child(1) { width: 300px; height: 300px; top: 10%; left: 10%; animation-delay: 0s; }
-        .bg-circle:nth-child(2) { width: 200px; height: 200px; top: 60%; right: 10%; animation-delay: -5s; }
-        .bg-circle:nth-child(3) { width: 150px; height: 150px; bottom: 10%; left: 20%; animation-delay: -10s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-30px) scale(1.1); }
-        }
-
         .header {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(20px);
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow);
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+            padding: 15px 0;
         }
-
-        .container {
+        .header-inner {
             max-width: 1300px;
             margin: 0 auto;
             padding: 0 30px;
-        }
-
-        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
         }
-
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
             font-size: 28px;
             font-weight: 700;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
-
-        .logo-emoji {
-            font-size: 36px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
+        .nav { display: flex; gap: 8px; flex-wrap: wrap; }
         .nav-btn {
             padding: 10px 20px;
-            border: 2px solid transparent;
+            border: none;
             background: transparent;
             border-radius: 50px;
             cursor: pointer;
@@ -136,1201 +66,530 @@
             font-weight: 500;
             font-size: 14px;
             transition: var(--transition);
-            position: relative;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
-
-        .nav-btn:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .nav-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .cart-badge {
+        .nav-btn:hover, .nav-btn.active { background: var(--primary); color: white; }
+        .badge {
             background: var(--danger);
             color: white;
             border-radius: 20px;
             padding: 2px 8px;
             font-size: 12px;
-            font-weight: 700;
-            min-width: 20px;
-            text-align: center;
+            margin-left: 4px;
         }
-
-        .logout-btn {
-            background: transparent;
-            border: 2px solid var(--danger);
-            color: var(--danger);
+        .screen { display: none; animation: fadeIn 0.3s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .container { max-width: 1300px; margin: 0 auto; padding: 40px 30px; }
+        .auth-wrapper {
+            display: flex; justify-content: center; align-items: center; min-height: 80vh;
         }
-
-        .logout-btn:hover {
-            background: var(--danger);
-            color: white;
-            border-color: var(--danger);
-        }
-
-        .main-content {
-            padding: 40px 0;
-            min-height: 70vh;
-        }
-
-        .screen {
-            display: none;
-            animation: slideIn 0.5s ease;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .auth-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 70vh;
-        }
-
         .auth-card {
             background: var(--white);
             border-radius: var(--radius);
-            box-shadow: var(--shadow-xl);
+            box-shadow: var(--shadow-lg);
             padding: 50px 40px;
             width: 100%;
-            max-width: 480px;
-            position: relative;
-            overflow: hidden;
+            max-width: 450px;
         }
-
-        .auth-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        .tabs { display: flex; gap: 5px; margin-bottom: 30px; background: #f1f5f9; border-radius: 50px; padding: 5px; }
+        .tab {
+            flex: 1; padding: 12px; border: none; background: transparent; border-radius: 50px;
+            cursor: pointer; font-weight: 600; font-family: inherit; font-size: 16px; transition: var(--transition);
         }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 35px;
-            background: #f1f5f9;
-            border-radius: 50px;
-            padding: 5px;
+        .tab.active { background: white; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .form { display: none; }
+        .form.active { display: block; }
+        .form h2 { font-size: 28px; margin-bottom: 5px; }
+        .form .sub { color: var(--text-light); margin-bottom: 25px; font-size: 14px; }
+        .field { margin-bottom: 18px; }
+        .field label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 14px; }
+        .field input {
+            width: 100%; padding: 14px 16px; border: 2px solid var(--border); border-radius: 10px;
+            font-family: inherit; font-size: 16px; transition: var(--transition); background: #f8fafc;
         }
-
-        .auth-tab {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            background: transparent;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            font-family: inherit;
-            font-size: 16px;
-            transition: var(--transition);
-            color: var(--text-light);
-        }
-
-        .auth-tab.active {
-            background: var(--white);
-            color: var(--primary);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .auth-form {
-            display: none;
-        }
-
-        .auth-form.active {
-            display: block;
-        }
-
-        .auth-form h2 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text);
-        }
-
-        .auth-subtitle {
-            color: var(--text-light);
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text);
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-sm);
-            font-family: inherit;
-            font-size: 16px;
-            transition: var(--transition);
-            background: #f8fafc;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            background: white;
-        }
-
-        .form-group .input-icon {
-            position: absolute;
-            right: 16px;
-            top: 42px;
-            font-size: 20px;
-        }
-
+        .field input:focus { outline: none; border-color: var(--primary); background: white; }
         .btn {
-            padding: 14px 30px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            font-family: inherit;
-            font-size: 16px;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
+            width: 100%; padding: 14px; border: none; border-radius: 50px; cursor: pointer;
+            font-weight: 600; font-family: inherit; font-size: 16px; transition: var(--transition); margin-top: 5px;
         }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            width: 100%;
-            margin-top: 10px;
-            box-shadow: var(--shadow);
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .btn-secondary { background: white; color: var(--primary); border: 2px solid var(--primary); }
+        .btn-secondary:hover { background: var(--primary); color: white; }
+        .shop-header { text-align: center; margin-bottom: 30px; }
+        .shop-header h1 { font-size: 36px; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .filters { display: flex; gap: 15px; justify-content: center; margin: 20px 0; flex-wrap: wrap; }
+        .filters input, .filters select {
+            padding: 12px 20px; border: none; border-radius: 50px; font-family: inherit; font-size: 14px;
         }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+        .filters input { min-width: 280px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .card {
+            background: white; border-radius: var(--radius); overflow: hidden;
+            box-shadow: var(--shadow); transition: var(--transition);
         }
-
-        .btn-secondary {
-            background: var(--white);
-            color: var(--primary);
-            border: 2px solid var(--primary);
+        .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+        .card-img {
+            width: 100%; height: 220px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 80px;
         }
-
-        .btn-secondary:hover {
-            background: var(--primary);
-            color: white;
+        .card-body { padding: 20px; }
+        .card-body h3 { font-size: 18px; margin-bottom: 8px; }
+        .card-body .price { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 15px; }
+        .card-body button {
+            width: 100%; padding: 12px; border: none; border-radius: 50px; cursor: pointer;
+            font-weight: 600; font-family: inherit; background: var(--primary); color: white; transition: var(--transition);
         }
-
-        .shop-header {
-            margin-bottom: 40px;
+        .card-body button:hover { background: var(--primary-dark); }
+        .cart-box {
+            background: white; border-radius: var(--radius); box-shadow: var(--shadow-lg);
+            padding: 40px; max-width: 800px; margin: 0 auto;
         }
-
-        .shop-header h1 {
-            font-size: 36px;
-            font-weight: 700;
-            color: white;
-            text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        .cart-box h2 { text-align: center; margin-bottom: 25px; font-size: 30px; }
+        .cart-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; border-bottom: 1px solid var(--border);
         }
-
-        .filter-bar {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            justify-content: center;
-            flex-wrap: wrap;
+        .qty-btn {
+            padding: 6px 14px; border: 2px solid var(--border); border-radius: 50px;
+            cursor: pointer; font-weight: 600; background: white; transition: var(--transition);
         }
-
-        .filter-bar input,
-        .filter-bar select {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 50px;
-            font-family: inherit;
-            font-size: 14px;
-            background: white;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
+        .qty-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .del-btn {
+            padding: 8px 16px; border: none; border-radius: 50px; cursor: pointer;
+            background: var(--danger); color: white; font-weight: 600;
         }
-
-        .filter-bar input {
-            min-width: 300px;
+        .total-line { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; border-top: 3px solid var(--primary); }
+        .total-line .big { font-size: 28px; font-weight: 700; color: var(--primary); }
+        .empty { text-align: center; padding: 60px; color: var(--text-light); font-size: 18px; }
+        .profile-box {
+            background: white; border-radius: var(--radius); box-shadow: var(--shadow-lg);
+            padding: 40px; max-width: 600px; margin: 0 auto;
         }
-
-        .filter-bar input:focus,
-        .filter-bar select:focus {
-            outline: none;
-            box-shadow: var(--shadow-md);
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            padding: 20px 0;
-        }
-
-        .product-card {
-            background: var(--white);
-            border-radius: var(--radius);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-xl);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
-        }
-
-        .product-info {
-            padding: 20px;
-        }
-
-        .product-name {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--text);
-        }
-
-        .product-price {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .product-price span {
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .product-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .add-to-cart-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 600;
-            font-family: inherit;
-            font-size: 14px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            transition: var(--transition);
-        }
-
-        .add-to-cart-btn:hover {
-            transform: scale(1.05);
-            box-shadow: var(--shadow-md);
-        }
-
-        .cart-container {
-            background: var(--white);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-xl);
-            padding: 40px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .cart-container h2 {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 30px;
-            text-align: center;
-            color: var(--text);
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            border-bottom: 2px solid var(--border);
-            transition: var(--transition);
-        }
-
-        .cart-item:hover {
-            background: #f8fafc;
-        }
-
-        .cart-item-info h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .cart-item-info p {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .cart-item-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .quantity-btn {
-            padding: 8px 15px;
-            border: 2px solid var(--border);
-            border-radius: 50px;
-            background: var(--white);
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .quantity-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .quantity {
-            font-size: 18px;
-            font-weight: 600;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        .remove-btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 50px;
-            background: var(--danger);
-            color: white;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .remove-btn:hover {
-            background: #dc2626;
-            transform: scale(1.05);
-        }
-
-        .cart-total {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 3px solid var(--primary);
-        }
-
-        .cart-total h3 {
-            font-size: 24px;
-            font-weight: 700;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .total-price {
-            color: var(--primary);
-            font-size: 32px;
-        }
-
-        .empty-cart {
-            text-align: center;
-            font-size: 18px;
-            color: var(--text-light);
-            padding: 60px 20px;
-        }
-
-        .profile-container {
-            background: var(--white);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-xl);
-            padding: 40px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .profile-container h2 {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .profile-info {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: var(--radius-sm);
-        }
-
-        .profile-info h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .profile-info p {
-            color: var(--text-light);
-            font-size: 16px;
-        }
-
+        .profile-box h2 { text-align: center; margin-bottom: 25px; }
+        .info-block { background: #f8fafc; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        .info-block h3 { margin-bottom: 5px; }
+        .info-block p { color: var(--text-light); }
         .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            justify-content: center; align-items: center; z-index: 999;
         }
-
-        .modal.active {
-            display: flex;
-        }
-
+        .modal.active { display: flex; }
         .modal-content {
-            background: var(--white);
-            border-radius: var(--radius);
-            padding: 40px;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: var(--shadow-xl);
-            animation: slideIn 0.3s ease;
+            background: white; border-radius: var(--radius); padding: 30px;
+            max-width: 450px; width: 90%;
         }
-
-        .modal-content h3 {
-            font-size: 24px;
-            margin-bottom: 25px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .modal-buttons .btn {
-            flex: 1;
-        }
-
-        .footer {
-            background: var(--white);
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-            box-shadow: var(--shadow);
-        }
-
-        .footer p {
-            color: var(--text-light);
-            font-size: 14px;
-            margin: 5px 0;
-        }
-
-        .loader {
-            text-align: center;
-            padding: 40px;
-            font-size: 18px;
-            color: var(--text-light);
-        }
-
+        .modal-content h3 { margin-bottom: 20px; }
+        .modal-btns { display: flex; gap: 10px; margin-top: 15px; }
+        .modal-btns .btn { flex: 1; }
+        .footer { background: white; text-align: center; padding: 20px; margin-top: 40px; color: var(--text-light); font-size: 14px; }
+        
         .spinner {
-            border: 4px solid var(--border);
-            border-top: 4px solid var(--primary);
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            animation: spin 0.6s linear infinite;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
         @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .nav-menu {
-                justify-content: center;
-            }
-            
-            .nav-btn {
-                padding: 8px 15px;
-                font-size: 12px;
-            }
-            
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 20px;
-            }
-            
-            .filter-bar input {
-                min-width: 200px;
-            }
-            
-            .cart-container,
-            .profile-container,
-            .auth-card {
-                padding: 25px;
-            }
-            
-            .shop-header h1 {
-                font-size: 28px;
-            }
+            .header-inner { flex-direction: column; gap: 10px; }
+            .grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="bg-animation">
-        <div class="bg-circle"></div>
-        <div class="bg-circle"></div>
-        <div class="bg-circle"></div>
-    </div>
 
-    <header class="header" id="header" style="display: none;">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <span class="logo-emoji">🏠</span>
-                    <span>Домашний Уют</span>
-                </div>
-                <nav class="nav-menu">
-                    <button class="nav-btn active" data-screen="shop">🛍️ Каталог</button>
-                    <button class="nav-btn" data-screen="cart">
-                        🛒 Корзина
-                        <span class="cart-badge" id="cart-badge" style="display: none;">0</span>
-                    </button>
-                    <button class="nav-btn" data-screen="profile">👤 Профиль</button>
-                    <button class="nav-btn logout-btn" id="logout-btn">🚪 Выйти</button>
-                </nav>
-            </div>
+    <header class="header" id="header" style="display:none;">
+        <div class="header-inner">
+            <div class="logo">🏠 Домашний Уют</div>
+            <nav class="nav">
+                <button class="nav-btn active" data-screen="shop">🛍️ Каталог</button>
+                <button class="nav-btn" data-screen="cart">🛒 Корзина <span class="badge" id="cartBadge" style="display:none;">0</span></button>
+                <button class="nav-btn" data-screen="profile">👤 Профиль</button>
+                <button class="nav-btn" onclick="logout()" style="color:var(--danger);">🚪 Выйти</button>
+            </nav>
         </div>
     </header>
 
-    <main class="main-content">
-        <div class="container">
-            
-            <div id="auth-screen" class="screen active">
-                <div class="auth-container">
-                    <div class="auth-card">
-                        <div class="auth-tabs">
-                            <button class="auth-tab active" data-tab="login">Вход</button>
-                            <button class="auth-tab" data-tab="register">Регистрация</button>
-                        </div>
-                        
-                        <div id="login-form" class="auth-form active">
-                            <h2>С возвращением! 👋</h2>
-                            <p class="auth-subtitle">Войдите, чтобы продолжить покупки</p>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" id="login-email" placeholder="example@mail.ru" required>
-                                <span class="input-icon">📧</span>
-                            </div>
-                            <div class="form-group">
-                                <label>Пароль</label>
-                                <input type="password" id="login-password" placeholder="••••••••" required>
-                                <span class="input-icon">🔒</span>
-                            </div>
-                            <button class="btn btn-primary" onclick="login()">
-                                Войти в аккаунт
-                            </button>
-                        </div>
-
-                        <div id="register-form" class="auth-form">
-                            <h2>Создайте аккаунт ✨</h2>
-                            <p class="auth-subtitle">Присоединяйтесь к тысячам покупателей</p>
-                            <div class="form-group">
-                                <label>Имя</label>
-                                <input type="text" id="reg-name" placeholder="Иван Петров" required>
-                                <span class="input-icon">👤</span>
-                            </div>
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input type="email" id="reg-email" placeholder="example@mail.ru" required>
-                                <span class="input-icon">📧</span>
-                            </div>
-                            <div class="form-group">
-                                <label>Пароль</label>
-                                <input type="password" id="reg-password" placeholder="Минимум 6 символов" required>
-                                <span class="input-icon">🔒</span>
-                            </div>
-                            <button class="btn btn-primary" onclick="register()">
-                                Зарегистрироваться
-                            </button>
-                        </div>
-                    </div>
+    <div id="screen-auth" class="screen active">
+        <div class="container auth-wrapper">
+            <div class="auth-card">
+                <div class="tabs">
+                    <button class="tab active" data-tab="login">Вход</button>
+                    <button class="tab" data-tab="register">Регистрация</button>
+                </div>
+                <div class="form active" id="form-login">
+                    <h2>С возвращением! 👋</h2>
+                    <p class="sub">Войдите для продолжения</p>
+                    <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="example@mail.ru"></div>
+                    <div class="field"><label>Пароль</label><input type="password" id="loginPass" placeholder="••••••••"></div>
+                    <button class="btn btn-primary" id="loginBtn" onclick="login()">Войти</button>
+                </div>
+                <div class="form" id="form-register">
+                    <h2>Регистрация ✨</h2>
+                    <p class="sub">Создайте аккаунт</p>
+                    <div class="field"><label>Имя</label><input type="text" id="regName" placeholder="Иван"></div>
+                    <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="example@mail.ru"></div>
+                    <div class="field"><label>Пароль</label><input type="password" id="regPass" placeholder="Минимум 6 символов"></div>
+                    <button class="btn btn-primary" id="regBtn" onclick="register()">Зарегистрироваться</button>
                 </div>
             </div>
-
-            <div id="shop-screen" class="screen">
-                <div class="shop-header">
-                    <h1>🏡 Товары для вашего дома</h1>
-                    <div class="filter-bar">
-                        <input type="text" id="search-input" placeholder="🔍 Поиск товаров...">
-                        <select id="sort-select">
-                            <option value="default">📋 По умолчанию</option>
-                            <option value="price-asc">💰 Цена: по возрастанию</option>
-                            <option value="price-desc">💎 Цена: по убыванию</option>
-                            <option value="name">📝 По названию</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="products-grid" id="products-grid">
-                    <div class="loader">
-                        <div class="spinner"></div>
-                        Загрузка товаров...
-                    </div>
-                </div>
-            </div>
-
-            <div id="cart-screen" class="screen">
-                <div class="cart-container">
-                    <h2>🛒 Ваша корзина</h2>
-                    <div id="cart-items">
-                        <p class="empty-cart">Корзина пуста 😴</p>
-                    </div>
-                    <div class="cart-total" id="cart-total-section" style="display: none;">
-                        <h3>
-                            <span>Итого:</span>
-                            <span class="total-price" id="total-price">0 ₽</span>
-                        </h3>
-                        <button class="btn btn-primary" onclick="checkout()" style="margin-top: 20px;">
-                            Оформить заказ 🎉
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="profile-screen" class="screen">
-                <div class="profile-container">
-                    <h2>👤 Личный кабинет</h2>
-                    <div class="profile-info">
-                        <h3 id="profile-name">Имя пользователя</h3>
-                        <p id="profile-email">email@example.com</p>
-                    </div>
-                    <button class="btn btn-secondary" onclick="openEditModal()" style="width: 100%;">
-                        ✏️ Редактировать профиль
-                    </button>
-                </div>
-
-                <div class="modal" id="edit-modal">
-                    <div class="modal-content">
-                        <h3>✏️ Редактирование профиля</h3>
-                        <div class="form-group">
-                            <label>Имя</label>
-                            <input type="text" id="edit-name">
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" id="edit-email">
-                        </div>
-                        <div class="modal-buttons">
-                            <button class="btn btn-primary" onclick="saveProfile()">💾 Сохранить</button>
-                            <button class="btn btn-secondary" onclick="closeEditModal()">❌ Отмена</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
-    </main>
+    </div>
 
-    <footer class="footer">
+    <div id="screen-shop" class="screen">
         <div class="container">
-            <p>© 2026 Домашний Уют. Все права защищены.</p>
-            <p>Учебный проект для практики | Сделано с ❤️</p>
+            <div class="shop-header">
+                <h1>🏡 Товары для дома</h1>
+                <div class="filters">
+                    <input type="text" id="searchInput" placeholder="🔍 Поиск...">
+                    <select id="sortSelect">
+                        <option value="default">По умолчанию</option>
+                        <option value="price-asc">Цена ↑</option>
+                        <option value="price-desc">Цена ↓</option>
+                        <option value="name">По названию</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid" id="productGrid"><p style="color:white;text-align:center;grid-column:1/-1;">Загрузка...</p></div>
         </div>
-    </footer>
+    </div>
+
+    <div id="screen-cart" class="screen">
+        <div class="container">
+            <div class="cart-box">
+                <h2>🛒 Корзина</h2>
+                <div id="cartItems"><p class="empty">Корзина пуста 😴</p></div>
+                <div id="cartTotal" style="display:none;">
+                    <div class="total-line"><span>Итого:</span><span class="big" id="totalPrice">0 ₽</span></div>
+                    <button class="btn btn-primary" onclick="checkout()" style="margin-top:15px;">Оформить заказ 🎉</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-profile" class="screen">
+        <div class="container">
+            <div class="profile-box">
+                <h2>👤 Личный кабинет</h2>
+                <div class="info-block">
+                    <h3 id="profileName">---</h3>
+                    <p id="profileEmail">---</p>
+                </div>
+                <button class="btn btn-secondary" onclick="openEdit()">✏️ Редактировать</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h3>✏️ Редактирование</h3>
+            <div class="field"><label>Имя</label><input type="text" id="editName"></div>
+            <div class="field"><label>Email</label><input type="email" id="editEmail"></div>
+            <div class="modal-btns">
+                <button class="btn btn-primary" onclick="saveProfile()">💾 Сохранить</button>
+                <button class="btn btn-secondary" onclick="closeEdit()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">© 2026 Домашний Уют. Учебный проект.</footer>
 
     <script>
-        // ===== НАСТРОЙКА SUPABASE (ЗАНЯТИЕ 2) =====
-        // ЗАМЕНИТЕ на свои данные из Supabase проекта!
-        const SUPABASE_URL = 'https://riuftwtjtxmhyqwyfwta.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdWZ0d3RqdHhtaHlxd3lmd3RhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNTE2NzUsImV4cCI6MjA5NzcyNzY3NX0.uJCsY9ic9xLBJqYKEIbSvNqzYOKQFDzFqrK_zu2t6vw';
-        
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        // ===== СОСТОЯНИЕ ПРИЛОЖЕНИЯ =====
-        let currentUser = null;
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const SB = supabase.createClient(
+            'https://riuftwtjtxmhyqwyfwta.supabase.co',
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdWZ0d3RqdHhtaHlxd3lmd3RhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNTE2NzUsImV4cCI6MjA5NzcyNzY3NX0.uJCsY9ic9xLBJqYKEIbSvNqzYOKQFDzFqrK_zu2t6vw'
+        );
+
+        let user = null;
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
         let allProducts = [];
-        
-        // ===== ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ =====
-        document.addEventListener('DOMContentLoaded', () => {
-            checkAuth();
-            setupEventListeners();
-        });
-        
-        // ===== ПРОВЕРКА АВТОРИЗАЦИИ (ЗАНЯТИЕ 7) =====
-        async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
-            
+
+        (async function init() {
+            const { data: { session } } = await SB.auth.getSession();
             if (session) {
-                currentUser = session.user;
-                await loadUserProfile();
+                user = session.user;
+                await loadProfile();
                 showApp();
-                showScreen('shop');
+                switchScreen('shop');
                 loadProducts();
-            } else {
-                showAuthScreen();
             }
+        })();
+
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('form-' + tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        document.querySelectorAll('[data-screen]').forEach(btn => {
+            btn.addEventListener('click', () => switchScreen(btn.dataset.screen));
+        });
+
+        function switchScreen(name) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + name).classList.add('active');
+            document.querySelectorAll('.nav-btn[data-screen]').forEach(b => b.classList.remove('active'));
+            const activeBtn = document.querySelector(`[data-screen="${name}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
+            if (name === 'cart') renderCart();
+            if (name === 'profile') loadProfile();
         }
-        
-        // ===== ЗАГРУЗКА ПРОФИЛЯ ИЗ БД (ЗАНЯТИЕ 4) =====
-        async function loadUserProfile() {
-            if (!currentUser) return;
-            
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('user_id', currentUser.id)
-                .single();
-            
-            if (data) {
-                document.getElementById('profile-name').textContent = data.name || 'Пользователь';
-                document.getElementById('profile-email').textContent = currentUser.email;
-                document.getElementById('edit-name').value = data.name || '';
-                document.getElementById('edit-email').value = currentUser.email || '';
-            }
-        }
-        
-        function showAuthScreen() {
-            document.getElementById('header').style.display = 'none';
-            document.getElementById('auth-screen').classList.add('active');
-            document.getElementById('shop-screen').classList.remove('active');
-            document.getElementById('cart-screen').classList.remove('active');
-            document.getElementById('profile-screen').classList.remove('active');
-        }
-        
+
         function showApp() {
             document.getElementById('header').style.display = 'block';
-            document.getElementById('auth-screen').classList.remove('active');
-            updateCartBadge();
+            document.getElementById('screen-auth').classList.remove('active');
+            updateBadge();
         }
-        
-        // ===== ВХОД (ЗАНЯТИЕ 6) =====
-        async function login() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            if (!email || !password) {
-                window.alert('Заполните все поля!'); // Стандартный диалог (Занятие 8)
-                return;
-            }
-            
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-            
-            if (error) {
-                Swal.fire('Ошибка входа!', error.message, 'error');
-            } else {
-                currentUser = data.user;
-                await loadUserProfile();
-                showApp();
-                showScreen('shop');
-                loadProducts();
-                Swal.fire('Успех!', 'Добро пожаловать! 🎉', 'success');
-            }
-        }
-        
-        // ===== РЕГИСТРАЦИЯ (ЗАНЯТИЕ 6) =====
-        async function register() {
-            const name = document.getElementById('reg-name').value;
-            const email = document.getElementById('reg-email').value;
-            const password = document.getElementById('reg-password').value;
-            
-            if (!name || !email || !password) {
-                window.alert('Заполните все поля!'); // Стандартный диалог (Занятие 8)
-                return;
-            }
-            
-            if (password.length < 6) {
-                Swal.fire('Ошибка!', 'Пароль должен быть минимум 6 символов', 'error');
-                return;
-            }
-            
-            const { data, error } = await supabase.auth.signUp({
-                email: email,
-                password: password
-            });
-            
-            if (error) {
-                Swal.fire('Ошибка регистрации!', error.message, 'error');
-            } else {
-                // Создаем профиль в базе данных
-                await supabase.from('profiles').insert([
-                    {
-                        user_id: data.user.id,
-                        name: name,
-                        email: email
-                    }
-                ]);
-                
-                currentUser = data.user;
-                await loadUserProfile();
-                showApp();
-                showScreen('shop');
-                loadProducts();
-                Swal.fire('Отлично!', 'Регистрация успешна! 🎉', 'success');
-            }
-        }
-        
-        // ===== ВЫХОД =====
-        async function logout() {
-            const result = await Swal.fire({
-                title: 'Вы уверены?',
-                text: 'Вы действительно хотите выйти?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Да, выйти',
-                cancelButtonText: 'Отмена'
-            });
-            
-            if (result.isConfirmed) {
-                await supabase.auth.signOut();
-                currentUser = null;
-                cart = [];
-                localStorage.removeItem('cart');
-                showAuthScreen();
-                Swal.fire('До свидания!', 'Вы вышли из аккаунта', 'info');
-            }
-        }
-        
-        // ===== ЗАГРУЗКА ТОВАРОВ ИЗ SUPABASE (ЗАНЯТИЕ 4) =====
-        async function loadProducts() {
-            const { data, error } = await supabase
-                .from('products')
-                .select('*')
-                .order('created_at', { ascending: false });
-            
-            if (error) {
-                console.error('Ошибка загрузки товаров:', error);
-                document.getElementById('products-grid').innerHTML = '<p class="loader">Ошибка загрузки товаров</p>';
-                return;
-            }
-            
-            allProducts = data || [];
-            displayProducts(allProducts);
-        }
-        
-        function displayProducts(products) {
-            const grid = document.getElementById('products-grid');
-            
-            if (products.length === 0) {
-                grid.innerHTML = '<p class="loader">Товары не найдены 😔</p>';
-                return;
-            }
-            
-            grid.innerHTML = products.map(product => `
-                <div class="product-card">
-                    <img src="${product.image_url || 'https://via.placeholder.com/300x250?text=Товар'}" 
-                         alt="${product.name}" 
-                         class="product-image"
-                         onerror="this.src='https://via.placeholder.com/300x250?text=Нет+фото'">
-                    <div class="product-info">
-                        <h3 class="product-name">${product.name}</h3>
-                        <p class="product-price">${product.price} <span>₽</span></p>
-                        <div class="product-actions">
-                            <button class="add-to-cart-btn" onclick="addToCart('${product.id}', '${product.name}', ${product.price}, '${product.image_url || ''}')">
-                                🛒 В корзину
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        // ===== НАСТРОЙКА СОБЫТИЙ =====
-        function setupEventListeners() {
-            document.getElementById('search-input').addEventListener('input', filterAndSort);
-            document.getElementById('sort-select').addEventListener('change', filterAndSort);
-            
-            document.querySelectorAll('.auth-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabName = this.dataset.tab;
-                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-                    document.getElementById(`${tabName}-form`).classList.add('active');
-                });
-            });
-            
-            document.querySelectorAll('[data-screen]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    showScreen(this.dataset.screen);
-                });
-            });
-            
-            document.getElementById('logout-btn').addEventListener('click', logout);
-        }
-        
-        function filterAndSort() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const sortType = document.getElementById('sort-select').value;
-            
-            let filtered = allProducts.filter(product => 
-                product.name.toLowerCase().includes(searchTerm)
-            );
-            
-            switch(sortType) {
-                case 'price-asc':
-                    filtered.sort((a, b) => a.price - b.price);
-                    break;
-                case 'price-desc':
-                    filtered.sort((a, b) => b.price - a.price);
-                    break;
-                case 'name':
-                    filtered.sort((a, b) => a.name.localeCompare(b.name));
-                    break;
-            }
-            
-            displayProducts(filtered);
-        }
-        
-        function showScreen(screenName) {
+
+        function showAuth() {
+            document.getElementById('header').style.display = 'none';
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(`${screenName}-screen`).classList.add('active');
-            
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            const activeBtn = document.querySelector(`[data-screen="${screenName}"]`);
-            if (activeBtn) activeBtn.classList.add('active');
-            
-            if (screenName === 'cart') updateCartDisplay();
-            if (screenName === 'profile') loadUserProfile();
-            if (screenName === 'shop') filterAndSort();
+            document.getElementById('screen-auth').classList.add('active');
         }
-        
-        // ===== КОРЗИНА =====
-        function addToCart(id, name, price, image_url) {
-            const existingItem = cart.find(item => item.id === id);
-            
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    id: id,
-                    name: name,
-                    price: price,
-                    image_url: image_url,
-                    quantity: 1
-                });
+
+        function setLoading(btn, text) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> ' + text;
+        }
+        function resetBtn(btn, text) {
+            btn.disabled = false;
+            btn.innerHTML = text;
+        }
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            const btn = document.getElementById('loginBtn');
+
+            if (!email || !pass) return Swal.fire('Ошибка', 'Заполните все поля', 'error');
+
+            setLoading(btn, 'Входим...');
+
+            const { data, error } = await SB.auth.signInWithPassword({ email, password: pass });
+
+            if (error) {
+                resetBtn(btn, 'Войти');
+                return Swal.fire('Ошибка', error.message, 'error');
             }
-            
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartBadge();
-            
-            Swal.fire({
-                title: 'Добавлено! 🎉',
-                text: `${name} добавлен в корзину`,
-                icon: 'success',
-                timer: 1500,
-                showConfirmButton: false
-            });
+
+            user = data.user;
+            await loadProfile();
+            showApp();
+            switchScreen('shop');
+            loadProducts();
+            resetBtn(btn, 'Войти');
+            Swal.fire({ title: 'Успех!', text: 'Добро пожаловать!', icon: 'success', timer: 1500, showConfirmButton: false });
         }
-        
-        function removeFromCart(id) {
-            // Стандартный диалог подтверждения (Занятие 8)
-            if (window.confirm('Точно удалить товар из корзины?')) {
-                cart = cart.filter(item => item.id !== id);
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCartBadge();
-                updateCartDisplay();
+
+        async function register() {
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPass').value.trim();
+            const btn = document.getElementById('regBtn');
+
+            if (!name || !email || !pass) return Swal.fire('Ошибка', 'Заполните все поля', 'error');
+            if (pass.length < 6) return Swal.fire('Ошибка', 'Пароль — минимум 6 символов', 'error');
+
+            setLoading(btn, 'Регистрируем...');
+
+            const { data, error } = await SB.auth.signUp({ email, password: pass });
+
+            if (error) {
+                resetBtn(btn, 'Зарегистрироваться');
+                return Swal.fire('Ошибка', error.message, 'error');
+            }
+
+            await SB.from('profiles').insert([{ user_id: data.user.id, name, email }]);
+
+            user = data.user;
+            await loadProfile();
+            showApp();
+            switchScreen('shop');
+            loadProducts();
+            resetBtn(btn, 'Зарегистрироваться');
+            Swal.fire({ title: 'Отлично!', text: 'Регистрация успешна!', icon: 'success', timer: 1500, showConfirmButton: false });
+        }
+
+        async function logout() {
+            await SB.auth.signOut();
+            user = null;
+            cart = [];
+            localStorage.removeItem('cart');
+            showAuth();
+        }
+
+        async function loadProfile() {
+            if (!user) return;
+            const { data } = await SB.from('profiles').select('*').eq('user_id', user.id).single();
+            if (data) {
+                document.getElementById('profileName').textContent = data.name || '—';
+                document.getElementById('profileEmail').textContent = user.email;
+                document.getElementById('editName').value = data.name || '';
+                document.getElementById('editEmail').value = user.email || '';
             }
         }
-        
-        function updateQuantity(id, change) {
-            const item = cart.find(item => item.id === id);
-            if (item) {
-                item.quantity += change;
-                if (item.quantity <= 0) {
-                    removeFromCart(id);
-                } else {
-                    localStorage.setItem('cart', JSON.stringify(cart));
-                    updateCartBadge();
-                    updateCartDisplay();
-                }
-            }
+
+        function openEdit() { document.getElementById('editModal').classList.add('active'); }
+        function closeEdit() { document.getElementById('editModal').classList.remove('active'); }
+
+        async function saveProfile() {
+            const name = document.getElementById('editName').value.trim();
+            const email = document.getElementById('editEmail').value.trim();
+            if (!name || !email) return Swal.fire('Ошибка', 'Заполните поля', 'error');
+
+            await SB.from('profiles').update({ name, email }).eq('user_id', user.id);
+            document.getElementById('profileName').textContent = name;
+            document.getElementById('profileEmail').textContent = email;
+            closeEdit();
+            Swal.fire({ title: 'Готово!', text: 'Профиль обновлён', icon: 'success', timer: 1500, showConfirmButton: false });
         }
-        
-        function updateCartBadge() {
-            const badge = document.getElementById('cart-badge');
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            
-            if (totalItems > 0) {
-                badge.style.display = 'inline';
-                badge.textContent = totalItems;
-            } else {
-                badge.style.display = 'none';
-            }
+
+        async function loadProducts() {
+            const { data } = await SB.from('products').select('*').order('created_at', { ascending: false });
+            allProducts = data || [];
+            renderProducts(allProducts);
         }
-        
-        function updateCartDisplay() {
-            const cartItems = document.getElementById('cart-items');
-            const totalSection = document.getElementById('cart-total-section');
-            
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<p class="empty-cart">Корзина пуста 😴</p>';
-                totalSection.style.display = 'none';
+
+        // ЭМОДЗИ-КАРТИНКИ (работают без интернета!)
+        const emojiMap = {
+            'Лампа': '💡',
+            'Подушка': '🛋️',
+            'Диффузор': '🌸',
+            'Часы': '🕐',
+            'Плед': '🧶',
+            'Стол': '🪑',
+            'Кружка': '☕',
+            'Ковер': '🟫',
+            'Зеркало': '🪞',
+            'default': '📦'
+        };
+
+        function getEmoji(name) {
+            for (const [key, emoji] of Object.entries(emojiMap)) {
+                if (name.includes(key)) return emoji;
+            }
+            return emojiMap['default'];
+        }
+
+        function getColor(name) {
+            const colors = ['#e0e7ff', '#fce7f3', '#d1fae5', '#fef3c7', '#e0f2fe', '#f3e8ff', '#ffe4e6'];
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            return colors[Math.abs(hash) % colors.length];
+        }
+
+        function renderProducts(list) {
+            const grid = document.getElementById('productGrid');
+            if (!list.length) {
+                grid.innerHTML = '<p style="color:white;text-align:center;grid-column:1/-1;">Товары не найдены</p>';
                 return;
             }
-            
-            totalSection.style.display = 'block';
-            
-            cartItems.innerHTML = cart.map(item => `
-                <div class="cart-item">
-                    <div class="cart-item-info">
-                        <h3>${item.name}</h3>
-                        <p>${item.price} ₽ за шт.</p>
+            grid.innerHTML = list.map(p => `
+                <div class="card">
+                    <div class="card-img" style="background:${getColor(p.name)};">
+                        ${getEmoji(p.name)}
                     </div>
-                    <div class="cart-item-actions">
-                        <button class="quantity-btn" onclick="updateQuantity('${item.id}', -1)">−</button>
-                        <span class="quantity">${item.quantity}</span>
-                        <button class="quantity-btn" onclick="updateQuantity('${item.id}', 1)">+</button>
-                        <button class="remove-btn" onclick="removeFromCart('${item.id}')">🗑️</button>
+                    <div class="card-body">
+                        <h3>${p.name}</h3>
+                        <p class="price">${p.price} ₽</p>
+                        <button onclick="addToCart('${p.id}', '${p.name.replace(/'/g, "\\'")}', ${p.price})">🛒 В корзину</button>
                     </div>
                 </div>
             `).join('');
-            
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            document.getElementById('total-price').textContent = `${total} ₽`;
         }
-        
-        async function checkout() {
-            const result = await Swal.fire({
-                title: 'Оформить заказ?',
-                text: 'Вы уверены, что хотите оформить заказ?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Да, оформить!',
-                cancelButtonText: 'Отмена'
-            });
-            
-            if (result.isConfirmed) {
-                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                
-                // Сохраняем заказ в Supabase
-                const { error } = await supabase
-                    .from('orders')
-                    .insert([
-                        {
-                            user_id: currentUser.id,
-                            items: cart,
-                            total: total,
-                            status: 'новый'
-                        }
-                    ]);
-                
-                if (error) {
-                    Swal.fire('Ошибка!', 'Не удалось оформить заказ', 'error');
-                } else {
-                    cart = [];
-                    localStorage.removeItem('cart');
-                    updateCartBadge();
-                    updateCartDisplay();
-                    window.alert('Заказ успешно оформлен! 🎉'); // Стандартный alert (Занятие 8)
-                }
-            }
+
+        document.getElementById('searchInput').addEventListener('input', filterAndSort);
+        document.getElementById('sortSelect').addEventListener('change', filterAndSort);
+
+        function filterAndSort() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const sort = document.getElementById('sortSelect').value;
+            let list = allProducts.filter(p => p.name.toLowerCase().includes(q));
+            if (sort === 'price-asc') list.sort((a, b) => a.price - b.price);
+            if (sort === 'price-desc') list.sort((a, b) => b.price - a.price);
+            if (sort === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
+            renderProducts(list);
         }
-        
-        function openEditModal() {
-            document.getElementById('edit-modal').classList.add('active');
+
+        function addToCart(id, name, price) {
+            const found = cart.find(i => i.id === id);
+            found ? found.qty++ : cart.push({ id, name, price, qty: 1 });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateBadge();
+            Swal.fire({ title: 'Добавлено!', text: name, icon: 'success', timer: 1200, showConfirmButton: false });
         }
-        
-        function closeEditModal() {
-            document.getElementById('edit-modal').classList.remove('active');
+
+        function removeFromCart(id) {
+            if (!confirm('Удалить товар?')) return;
+            cart = cart.filter(i => i.id !== id);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateBadge();
+            renderCart();
         }
-        
-        async function saveProfile() {
-            const name = document.getElementById('edit-name').value;
-            const email = document.getElementById('edit-email').value;
-            
-            if (!name || !email) {
-                window.alert('Заполните все поля!');
+
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) { removeFromCart(id); return; }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateBadge();
+            renderCart();
+        }
+
+        function updateBadge() {
+            const badge = document.getElementById('cartBadge');
+            const total = cart.reduce((s, i) => s + i.qty, 0);
+            badge.style.display = total ? 'inline' : 'none';
+            badge.textContent = total;
+        }
+
+        function renderCart() {
+            const box = document.getElementById('cartItems');
+            const totalBlock = document.getElementById('cartTotal');
+            if (!cart.length) {
+                box.innerHTML = '<p class="empty">Корзина пуста 😴</p>';
+                totalBlock.style.display = 'none';
                 return;
             }
-            
-            const { error } = await supabase
-                .from('profiles')
-                .update({ name: name, email: email })
-                .eq('user_id', currentUser.id);
-            
-            if (error) {
-                Swal.fire('Ошибка!', 'Не удалось сохранить профиль', 'error');
-            } else {
-                document.getElementById('profile-name').textContent = name;
-                document.getElementById('profile-email').textContent = email;
-                closeEditModal();
-                Swal.fire('Сохранено! ✅', 'Профиль обновлен', 'success');
-            }
+            totalBlock.style.display = 'block';
+            box.innerHTML = cart.map(i => `
+                <div class="cart-row">
+                    <div><strong>${i.name}</strong><br>${i.price} ₽</div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <button class="qty-btn" onclick="changeQty('${i.id}', -1)">−</button>
+                        <span>${i.qty}</span>
+                        <button class="qty-btn" onclick="changeQty('${i.id}', 1)">+</button>
+                        <button class="del-btn" onclick="removeFromCart('${i.id}')">🗑</button>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('totalPrice').textContent = cart.reduce((s, i) => s + i.price * i.qty, 0) + ' ₽';
         }
-        
-        document.addEventListener('click', function(e) {
-            if (e.target.id === 'edit-modal') {
-                closeEditModal();
-            }
-        });
-        
-        console.log('🏠 Магазин "Домашний Уют" готов к работе!');
-        console.log('✅ Supabase подключен');
-        console.log('⚠️ Не забудьте заменить SUPABASE_URL и SUPABASE_KEY на свои данные!');
+
+        async function checkout() {
+            if (!cart.length) return;
+            const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+            const { error } = await SB.from('orders').insert([{ user_id: user.id, items: cart, total, status: 'новый' }]);
+            if (error) return Swal.fire('Ошибка', 'Не удалось оформить заказ', 'error');
+            cart = [];
+            localStorage.removeItem('cart');
+            updateBadge();
+            renderCart();
+            Swal.fire({ title: 'Готово!', text: 'Заказ оформлен! 🎉', icon: 'success', timer: 2000, showConfirmButton: false });
+        }
+
+        document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEdit(); });
     </script>
 </body>
 </html>
