@@ -66,8 +66,12 @@
             font-weight: 500;
             font-size: 14px;
             transition: var(--transition);
+            text-decoration: none;
+            color: var(--text);
         }
         .nav-btn:hover, .nav-btn.active { background: var(--primary); color: white; }
+        .admin-link { color: #f59e0b !important; }
+        .admin-link:hover { background: #f59e0b !important; color: white !important; }
         .badge {
             background: var(--danger);
             color: white;
@@ -129,10 +133,8 @@
             box-shadow: var(--shadow); transition: var(--transition);
         }
         .card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
-        .card-img {
-            width: 100%; height: 220px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 80px;
+        .card img {
+            width: 100%; height: 220px; object-fit: cover; background: #e2e8f0;
         }
         .card-body { padding: 20px; }
         .card-body h3 { font-size: 18px; margin-bottom: 8px; }
@@ -212,6 +214,7 @@
                 <button class="nav-btn active" data-screen="shop">🛍️ Каталог</button>
                 <button class="nav-btn" data-screen="cart">🛒 Корзина <span class="badge" id="cartBadge" style="display:none;">0</span></button>
                 <button class="nav-btn" data-screen="profile">👤 Профиль</button>
+                <a href="admin.html" class="nav-btn admin-link">⚙️ Админ-панель</a>
                 <button class="nav-btn" onclick="logout()" style="color:var(--danger);">🚪 Выйти</button>
             </nav>
         </div>
@@ -302,6 +305,7 @@
     <footer class="footer">© 2026 Домашний Уют. Учебный проект.</footer>
 
     <script>
+        // ===== ПОДКЛЮЧЕНИЕ К SUPABASE =====
         const SB = supabase.createClient(
             'https://riuftwtjtxmhyqwyfwta.supabase.co',
             'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdWZ0d3RqdHhtaHlxd3lmd3RhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNTE2NzUsImV4cCI6MjA5NzcyNzY3NX0.uJCsY9ic9xLBJqYKEIbSvNqzYOKQFDzFqrK_zu2t6vw'
@@ -311,6 +315,7 @@
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
         let allProducts = [];
 
+        // ===== ИНИЦИАЛИЗАЦИЯ =====
         (async function init() {
             const { data: { session } } = await SB.auth.getSession();
             if (session) {
@@ -322,6 +327,7 @@
             }
         })();
 
+        // ===== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК =====
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -331,6 +337,7 @@
             });
         });
 
+        // ===== НАВИГАЦИЯ =====
         document.querySelectorAll('[data-screen]').forEach(btn => {
             btn.addEventListener('click', () => switchScreen(btn.dataset.screen));
         });
@@ -366,6 +373,7 @@
             btn.innerHTML = text;
         }
 
+        // ===== АВТОРИЗАЦИЯ =====
         async function login() {
             const email = document.getElementById('loginEmail').value.trim();
             const pass = document.getElementById('loginPass').value.trim();
@@ -428,6 +436,7 @@
             showAuth();
         }
 
+        // ===== ПРОФИЛЬ =====
         async function loadProfile() {
             if (!user) return;
             const { data } = await SB.from('profiles').select('*').eq('user_id', user.id).single();
@@ -454,38 +463,11 @@
             Swal.fire({ title: 'Готово!', text: 'Профиль обновлён', icon: 'success', timer: 1500, showConfirmButton: false });
         }
 
+        // ===== ТОВАРЫ (с реальными фото) =====
         async function loadProducts() {
             const { data } = await SB.from('products').select('*').order('created_at', { ascending: false });
             allProducts = data || [];
             renderProducts(allProducts);
-        }
-
-        // ЭМОДЗИ-КАРТИНКИ (работают без интернета!)
-        const emojiMap = {
-            'Лампа': '💡',
-            'Подушка': '🛋️',
-            'Диффузор': '🌸',
-            'Часы': '🕐',
-            'Плед': '🧶',
-            'Стол': '🪑',
-            'Кружка': '☕',
-            'Ковер': '🟫',
-            'Зеркало': '🪞',
-            'default': '📦'
-        };
-
-        function getEmoji(name) {
-            for (const [key, emoji] of Object.entries(emojiMap)) {
-                if (name.includes(key)) return emoji;
-            }
-            return emojiMap['default'];
-        }
-
-        function getColor(name) {
-            const colors = ['#e0e7ff', '#fce7f3', '#d1fae5', '#fef3c7', '#e0f2fe', '#f3e8ff', '#ffe4e6'];
-            let hash = 0;
-            for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-            return colors[Math.abs(hash) % colors.length];
         }
 
         function renderProducts(list) {
@@ -496,9 +478,9 @@
             }
             grid.innerHTML = list.map(p => `
                 <div class="card">
-                    <div class="card-img" style="background:${getColor(p.name)};">
-                        ${getEmoji(p.name)}
-                    </div>
+                    <img src="${p.image_url || 'https://placehold.co/400x300/e2e8f0/64748b?text=Нет+фото'}" 
+                         alt="${p.name}"
+                         onerror="this.src='https://placehold.co/400x300/e2e8f0/64748b?text=Нет+фото'">
                     <div class="card-body">
                         <h3>${p.name}</h3>
                         <p class="price">${p.price} ₽</p>
@@ -521,6 +503,7 @@
             renderProducts(list);
         }
 
+        // ===== КОРЗИНА =====
         function addToCart(id, name, price) {
             const found = cart.find(i => i.id === id);
             found ? found.qty++ : cart.push({ id, name, price, qty: 1 });
