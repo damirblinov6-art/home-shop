@@ -86,9 +86,13 @@
         tr:hover td { background: rgba(255,255,255,0.03); }
         .product-cell { display: flex; align-items: center; gap: 12px; }
         .product-thumb {
-            width: 48px; height: 48px; border-radius: 12px; object-fit: cover;
-            background: #334155; flex-shrink: 0;
-        }
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    object-fit: contain;
+    background: #f1f5f9;
+    flex-shrink: 0;
+}
         .no-photo {
             width: 48px; height: 48px; border-radius: 12px; background: #334155;
             display: flex; align-items: center; justify-content: center;
